@@ -13,6 +13,9 @@ provider:
     AWS_SECRET: ${param:AWS_SECRET}
     AWS_S3_BUCKET_NAME: ${param:AWS_S3_BUCKET_NAME}
 
+plugins:
+  - serverless-offline
+
 functions:
   api:
     handler: handler.handler

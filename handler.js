@@ -1,8 +1,12 @@
 const serverless = require('serverless-http')
+const bodyParser = require('body-parser')
 const express = require('express')
 const app = express()
 
 const routes = require('./src/index')
+
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 
 app.get(['/', '/v1', '/ping', '/v1/ping'], (req, res, next) => {
   return res.status(200).json({
