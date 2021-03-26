@@ -8,6 +8,10 @@ provider:
   name: aws
   runtime: nodejs12.x
   lambdaHashingVersion: '20201221'
+  environment:
+    AWS_KEY: ${param:AWS_KEY}
+    AWS_SECRET: ${param:AWS_SECRET}
+    AWS_S3_BUCKET_NAME: ${param:AWS_S3_BUCKET_NAME}
 
 functions:
   api:
