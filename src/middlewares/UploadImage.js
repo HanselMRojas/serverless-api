@@ -11,7 +11,7 @@ const middleware = (config = defaultConfig) => {
     const uploadHandler = multer({
       storage: multer.diskStorage({
         destination: (req, file, cb) => {
-          return cb(null, path.join(__dirname, '../../.temp'))
+          return cb(null, path.join(__dirname, '../../temp'))
         },
         filename: (req, file, cb) => {
           return cb(null, `${uuid.v4()}.jpg`)
@@ -24,8 +24,9 @@ const middleware = (config = defaultConfig) => {
 
     uploadHandler(req, res, function (error) {
       if (error) {
+        console.log(error)
         next({
-          message: error,
+          error,
           status: 500
         })
       } else {

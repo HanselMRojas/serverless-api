@@ -21,23 +21,23 @@ const S3 = new AWS.S3({
  */
 exports.uploadImage = async (req, res, next) => {
   try {
-    const { file } = req
-    console.log(file.path)
-    const outputBuffer = await sharp(file.path).toFile('fuck.png')
-    console.log(outputBuffer)
-    // const params = {
-    //   Bucket: process.env.AWS_S3_BUCKET_NAME,
-    //   Key:  `public/img/uploads/${uuid.v4()}.png`,
-    //   Body: outputBuffer,
-    //   ContentType: 'image/png',
-    //   ACL: 'public-read'
-    // } 
+    const { file } = req.body
+    const outputBuffer = await sharp(Buffer.from(file, 'base64')).toFormat('png').toBuffer()
 
-    // await S3.upload(params)
+    const params = {
+      Bucket: 'pirpos',// process.env.AWS_S3_BUCKET_NAME,
+      Key:  `public/img/uploads/${uuid.v4()}.png`,
+      Body: outputBuffer,
+      ContentType: 'image/png',
+      ACL: 'public-read'
+    }
 
-    res.status(201).json({
-      status: 201,
-      file
+    S3.upload(params, (err, aws) => {
+      res.status(201).json({
+        status: 201,
+        aws,
+        meesage: 'Image uploaded!'
+      })
     })
   } catch (error) {
     console.log(error)

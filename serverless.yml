@@ -4,6 +4,9 @@ service: pirpos-img
 
 frameworkVersion: '2'
 
+plugins:
+  - serverless-offline
+
 provider:
   name: aws
   runtime: nodejs12.x
@@ -12,9 +15,6 @@ provider:
     AWS_KEY: ${param:AWS_KEY}
     AWS_SECRET: ${param:AWS_SECRET}
     AWS_S3_BUCKET_NAME: ${param:AWS_S3_BUCKET_NAME}
-
-plugins:
-  - serverless-offline
 
 functions:
   api:
@@ -26,3 +26,4 @@ functions:
       - http:
           path: /{proxy+}
           method: ANY
+
