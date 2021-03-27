@@ -4,6 +4,8 @@ const fs = require('fs')
 const sharp = require('sharp')
 const path = require('path')
 
+const ImageSchema = require('../schemas/ImageSchema')
+
 const S3 = new AWS.S3({
   ACL:'public-read',
   accessKeyId: process.env.AWS_KEY,
@@ -21,21 +23,37 @@ const S3 = new AWS.S3({
  */
 exports.uploadImage = async (req, res, next) => {
   try {
-    const { file } = req.body
-    const outputBuffer = await sharp(Buffer.from(file, 'base64')).toFormat('png').toBuffer()
+    const { file, name } = req.body
+    const outputBuffer = await sharp(Buffer.from(file, 'base64'))
+      .toFormat('png')
+      .toBuffer()
+
+    const img = {
+      id: uuid.v4(),
+      name,
+      url: null,
+      created_at: Date.now()
+    }
 
     const params = {
-      Bucket: 'pirpos',// process.env.AWS_S3_BUCKET_NAME,
-      Key:  `public/img/uploads/${uuid.v4()}.png`,
+      Bucket: process.env.AWS_S3_BUCKET_NAME,
+      Key:  `public/img/uploads/${img.id}.png`,
       Body: outputBuffer,
       ContentType: 'image/png',
       ACL: 'public-read'
     }
 
-    S3.upload(params, (err, aws) => {
+    S3.upload(params, async (err, aws) => {
+      const newImage = new ImageSchema({
+        ...img,
+        url: aws.Location
+      })
+
+      const payload = await newImage.save()
+
       res.status(201).json({
         status: 201,
-        aws,
+        payload,
         meesage: 'Image uploaded!'
       })
     })

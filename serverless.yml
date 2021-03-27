@@ -15,6 +15,10 @@ provider:
     AWS_KEY: ${param:AWS_KEY}
     AWS_SECRET: ${param:AWS_SECRET}
     AWS_S3_BUCKET_NAME: ${param:AWS_S3_BUCKET_NAME}
+    MONGO_HOST: ${param:MONGO_HOST}
+    MONGO_USER: ${param:MONGO_USER}
+    MONGO_PASS: ${param:MONGO_PASS}
+    MONGO_DB: ${param:MONGO_DB}
 
 functions:
   api:

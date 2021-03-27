@@ -4,7 +4,18 @@ const express = require('express')
 const app = express()
 
 const routes = require('./src/index')
+const db = require('./src/config/db')
 
+// Configure DB
+db.connect({
+  auth: true,
+  host: process.env.MONGO_HOST,
+  db: process.env.MONGO_DB,
+  username: process.env.MONGO_USER,
+  password: process.env.MONGO_PASS
+})
+
+// Middlewares
 app.use(bodyParser.urlencoded({ extended: false, limit: '5mb' }))
 app.use(bodyParser.json({ limit: '5mb' }))
 
