@@ -22,7 +22,7 @@ const ImageSchema = new Schema({
     trim: true,
     default: null
   },
-  created_at: {
+  createdAt: {
     type: Date,
     default: null
   }

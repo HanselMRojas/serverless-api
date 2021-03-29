@@ -12,6 +12,20 @@ const S3 = new AWS.S3({
   secretAccessKey: process.env.AWS_SECRET
 })
 
+exports.listImages = async (req, res, next) => {
+  try {
+    const images = await ImageSchema.find({})
+    const total = await ImageSchema.countDocuments()
+
+    res.status(200).json({
+      payload: images,
+      total
+    })
+  } catch (error) {
+    next({ error, status: 500 })
+  }
+}
+
 /**
  * UploadImage
  * Upload Image to AMAZON S3
@@ -26,13 +40,15 @@ exports.uploadImage = async (req, res, next) => {
     const { file, name } = req.body
     const outputBuffer = await sharp(Buffer.from(file, 'base64'))
       .toFormat('png')
+      .resize(1000)
+      .png({ compressionLevel: 9, quality: 80 })
       .toBuffer()
 
     const img = {
       id: uuid.v4(),
       name,
       url: null,
-      created_at: Date.now()
+      createdAt: Date.now()
     }
 
     const params = {
@@ -46,6 +62,7 @@ exports.uploadImage = async (req, res, next) => {
     S3.upload(params, async (err, aws) => {
       const newImage = new ImageSchema({
         ...img,
+        etag: aws.Etag,
         url: aws.Location
       })
 
@@ -58,7 +75,6 @@ exports.uploadImage = async (req, res, next) => {
       })
     })
   } catch (error) {
-    console.log(error)
     next({
       error,
       status: 500
