@@ -3,6 +3,8 @@ const bodyParser = require('body-parser')
 const express = require('express')
 const app = express()
 
+const cors = require('cors')
+
 const routes = require('./src/index')
 const db = require('./src/config/db')
 
@@ -18,6 +20,10 @@ db.connect({
 // Middlewares
 app.use(bodyParser.urlencoded({ extended: false, limit: '5mb' }))
 app.use(bodyParser.json({ limit: '5mb' }))
+
+app.use(cors({
+  origin: '*'
+}))
 
 app.get(['/', '/v1', '/ping', '/v1/ping'], (req, res, next) => {
   return res.status(200).json({
@@ -48,10 +54,5 @@ app.use((req, res, next) => {
 })
 
 module.exports.handler = serverless({
-  app,
-  binarySettings: {
-    isBinary: ({ headers }) => true,
-    contentTypes: ['image/*'],
-    contentEncodings: []
-  }
+  app
 })

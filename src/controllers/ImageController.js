@@ -1,8 +1,6 @@
 const AWS = require('aws-sdk')
 const uuid = require('uuid')
-const fs = require('fs')
 const sharp = require('sharp')
-const path = require('path')
 
 const ImageSchema = require('../schemas/ImageSchema')
 
